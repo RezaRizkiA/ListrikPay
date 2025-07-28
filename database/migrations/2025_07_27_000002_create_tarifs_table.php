@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penggunaans', function (Blueprint $table) {
+        Schema::create('tarifs', function (Blueprint $table) {
             $table->id();
+            $table->string('kode_tarif');           // Contoh: "R-1/TR 900 VA"
+            $table->integer('daya');                    // Contoh: 900, 1300, dst
+            $table->decimal('tarifperkwh', 10, 2);      // Contoh: 1352.00
             $table->timestamps();
+
         });
     }
 
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penggunaans');
+        Schema::dropIfExists('tarifs');
     }
 };

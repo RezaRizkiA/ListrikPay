@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('tagihans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_penggunaan')->constrained('penggunaans');
+            $table->foreignId('id_pelanggan')->constrained('pelanggans');
+            $table->string('bulan', 10);
+            $table->year('tahun');
+            $table->integer('jumlah_meter');
+            $table->enum('status', ['Belum Lunas', 'Lunas'])->default('Belum Lunas');
             $table->timestamps();
         });
     }

@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('pelanggans', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('role', ['admin', 'pelanggan'])->default('pelanggan');
-            $table->foreignId('level_id')->constrained('levels');
-            $table->rememberToken();
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('nomor_kwh', 25);
+            $table->string('nama_pelanggan', 100);
+            $table->string('alamat');
+            $table->foreignId('tarif_id')->constrained('tarifs');
             $table->timestamps();
-
         });
     }
 
