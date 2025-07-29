@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 
 class PelangganController extends Controller
 {
+    public function index()
+    {
+        $pelanggans = Pelanggan::all();
+        return view('dashboard.pelanggan', compact('pelanggans'));
+    }
     public function cari(Request $request)
     {
         $request->validate([
