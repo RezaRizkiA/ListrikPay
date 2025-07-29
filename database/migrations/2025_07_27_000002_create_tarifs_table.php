@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('daya');                    // Contoh: 900, 1300, dst
             $table->decimal('tarifperkwh', 10, 2);      // Contoh: 1352.00
             $table->timestamps();
-
         });
     }
 

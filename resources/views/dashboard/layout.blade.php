@@ -76,17 +76,49 @@
                         <span class="ml-3">Tarif Listrik</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('dashboard.user') }}"
-                        class="flex items-center p-2 text-base font-medium {{ request()->routeIs('dashboard.user') ? 'bg-gray-700 text-white' : 'text-gray-900' }} rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                {{-- User Management Dropdown --}}
+                <li x-data="{ open: {{ request()->routeIs('dashboard.user') || request()->routeIs('dashboard.level') ? 'true' : 'false' }} }"
+                    class="relative">
+                    <button @click="open = !open" class="flex items-center w-full p-2 text-base font-medium rounded-lg
+                             transition
+                             focus:outline-none
+                             {{ (request()->routeIs('dashboard.user') || request()->routeIs('dashboard.levels'))
+                                 ? 'bg-gray-700 text-white'
+                                 : 'text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700' }}">
                         <svg aria-hidden="true"
-                            class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                            fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                             <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                         </svg>
-                        <span class="ml-3">User Management</span>
-                    </a>
+                        <span class="ml-3 flex-1 text-left">User Management</span>
+                        <svg :class="{ 'rotate-90': open }" class="w-4 h-4 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+
+                    {{-- sub-menu --}}
+                    <ul x-show="open" x-collapse class="mt-1 space-y-1 pl-12">
+                        {{-- Levels --}}
+                        <li>
+                            <a href="{{ route('dashboard.level') }}" class="block px-2 py-1 text-sm rounded-lg transition
+                                  {{ request()->routeIs('dashboard.level')
+                                     ? 'bg-gray-700 text-white'
+                                     : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                                Levels
+                            </a>
+                        </li>
+                        {{-- Users --}}
+                        <li>
+                            <a href="{{ route('dashboard.user') }}" class="block px-2 py-1 text-sm rounded-lg transition
+                                  {{ request()->routeIs('dashboard.user')
+                                     ? 'bg-gray-700 text-white'
+                                     : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                                Users
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="{{ route('dashboard.laporan') }}"
@@ -103,7 +135,7 @@
             </ul>
             <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
                 <li>
-                    <a href="#"
+                    <a href="#help"
                         class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                         <svg aria-hidden="true"
                             class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -249,14 +281,14 @@
                                     <path fill="#de2910" d="M0 0h512v512H0z" />
                                     <use width="30" height="20" transform="matrix(76.8 0 0 76.8 128 128)"
                                         xlink:href="#a" />
-                                    <use width="30" height="20"
-                                        transform="rotate(-121 142.6 -47) scale(25.5827)" xlink:href="#a" />
+                                    <use width="30" height="20" transform="rotate(-121 142.6 -47) scale(25.5827)"
+                                        xlink:href="#a" />
                                     <use width="30" height="20" transform="rotate(-98.1 198 -82) scale(25.6)"
                                         xlink:href="#a" />
-                                    <use width="30" height="20"
-                                        transform="rotate(-74 272.4 -114) scale(25.6137)" xlink:href="#a" />
-                                    <use width="30" height="20"
-                                        transform="matrix(16 -19.968 19.968 16 256 230.4)" xlink:href="#a" />
+                                    <use width="30" height="20" transform="rotate(-74 272.4 -114) scale(25.6137)"
+                                        xlink:href="#a" />
+                                    <use width="30" height="20" transform="matrix(16 -19.968 19.968 16 256 230.4)"
+                                        xlink:href="#a" />
                                 </svg>
                                 中文 (繁體)
                             </div>

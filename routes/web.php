@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\LevelController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PenggunaanController;
@@ -31,13 +32,13 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     // Pembayaran
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran');
 
-
-
     // Tarif Listrik
     Route::get('/tarif', [TarifController::class, 'index'])->name('tarif');
 
     // User Management (opsional untuk admin)
     Route::get('/user', [UserController::class, 'index'])->name('user');
+
+    Route::get('/levels', [LevelController::class, 'index'])->name('level');
 
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
