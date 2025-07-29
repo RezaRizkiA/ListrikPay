@@ -2,66 +2,123 @@
 namespace App\Livewire;
 
 use App\Models\Pelanggan;
+use App\Models\Pembayaran;
+use App\Models\Tagihan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class CariPelanggan extends Component
 {
-    public $input    = '';
-    public $data     = null;
-    public $notFound = false;
+    public $input           = '';
+    public $data            = null;
+    public $notFound        = false;
+    public $alreadyPaid     = false;
+    public $paymentSuccess  = false;
+    public $pembayaranTotal = 0;
 
     public function cari()
     {
-        // Debug: tambahkan logging untuk memastikan method dipanggil
-        Log::info('Method cari() dipanggil dengan input: ' . $this->input);
-
         // Reset state sebelum pencarian baru
-        $this->notFound = false;
-        $this->data     = null;
+        $this->notFound        = false;
+        $this->data            = null;
+        $this->alreadyPaid     = false;
+        $this->paymentSuccess  = false;
+        $this->pembayaranTotal = 0;
 
         if (trim($this->input) == '') {
-            Log::info('Input kosong, return');
             return;
         }
 
         try {
             $pelanggan = Pelanggan::with([
-                'tagihans' => function ($q) {
-                    $q->latest('tahun')->latest('bulan');
-                },
+                'tagihans' => fn($q) => $q->latest('tahun')->latest('bulan'),
                 'penggunaan',
             ])
                 ->where('id', $this->input)
                 ->orWhere('nomor_kwh', $this->input)
                 ->first();
 
-            Log::info('Hasil pencarian: ' . ($pelanggan ? 'ditemukan' : 'tidak ditemukan'));
             if ($pelanggan && $pelanggan->tagihans->count()) {
-                // Ambil tagihan terakhir
-                $tagihan = $pelanggan->tagihans->first();
+                $tagihan   = $pelanggan->tagihans->first();
+                $tagihanId = $tagihan->id;
 
-                // Siapkan data untuk modal
+                // Jika Sudah Lunas
+                if ($tagihan->status === 'Lunas') {
+                    $this->alreadyPaid = true;
+                    // Cukup data minimal untuk modal lunas
+                    $this->data = [
+                        'id'    => $pelanggan->nomor_kwh,
+                        'bulan' => $tagihan->bulan,
+                        'tahun' => $tagihan->tahun,
+                    ];
+                    // langsung tampilkan modal
+                    return;
+                }
+
+                // Kalau belum lunas, hitung normal
+                $pemakaian      = $tagihan->jumlah_meter;
+                $tarifPerKwh    = $pelanggan->tarif->tarifperkwh;
+                $tagihanListrik = $pemakaian * $tarifPerKwh;
+                $biayaAdmin     = 2500;
+                $ppn            = $tagihanListrik * 0.1;
+                $totalTagihan   = $tagihanListrik + $biayaAdmin + $ppn;
+
+                // Siapkan data untuk modal detail
                 $this->data = [
-                    'id'              => $pelanggan->nomor_kwh,
+                    'id'              => $pelanggan->id,
+                    'nomor_kwh'       => $pelanggan->nomor_kwh,
+                    'tagihan_id'      => $tagihanId,
                     'nama'            => $pelanggan->nama_pelanggan,
                     'alamat'          => $pelanggan->alamat,
                     'tarif_daya'      => $pelanggan->tarif->daya . ' VA',
                     'bulan'           => $tagihan->bulan,
                     'tahun'           => $tagihan->tahun,
-                    'jumlah_meter'    => $tagihan->jumlah_meter,
-                    // Silakan tambahkan logika perhitungan tagihan listrik, admin, ppn, dst.
-                    'tagihan_listrik' => 500000,
-                    'biaya_admin'     => 2500,
-                    'ppn'             => 5000,
+                    'jumlah_meter'    => $pemakaian,
+                    'tagihan_listrik' => $tagihanListrik,
+                    'biaya_admin'     => $biayaAdmin,
+                    'ppn'             => $ppn,
+                    'total_tagihan'   => $totalTagihan,
                 ];
-                // dd($this->data);
             } else {
                 $this->notFound = true;
             }
         } catch (\Exception $e) {
-            Log::error('Error dalam pencarian: ' . $e->getMessage());
+            Log::error('Gagal mencari pelanggan: ' . $e->getMessage());
             $this->notFound = true;
+        }
+    }
+
+    public function bayarSekarang()
+    {
+        if (! $this->data || ! isset($this->data['tagihan_id'])) {
+            return;
+        }
+
+        try {
+            // simpan pembayaran
+            $pembayaran = Pembayaran::create([
+                'id_tagihan'         => $this->data['tagihan_id'],
+                'id_pelanggan'       => $this->data['id'],
+                'id_user'            => Auth::id(),
+                'tanggal_pembayaran' => now()->toDateString(),
+                'bulan_bayar'        => $this->data['bulan'],
+                'biaya_admin'        => $this->data['biaya_admin'],
+                'total_bayar'        => $this->data['total_tagihan'],
+            ]);
+
+            // update status tagihan
+            Tagihan::find($this->data['tagihan_id'])
+                ->update(['status' => 'Lunas']);
+
+            // set modal sukses
+            $this->paymentSuccess  = true;
+            $this->pembayaranTotal = $pembayaran->total_bayar;
+            // hilangkan data biar detail modal tidak muncul
+            $this->data = null;
+
+        } catch (\Exception $e) {
+            Log::error('Gagal simpan pembayaran: ' . $e->getMessage());
         }
     }
 
@@ -69,17 +126,13 @@ class CariPelanggan extends Component
     {
         Log::info('Method closeModal() dipanggil');
 
-        $this->data     = null;
-        $this->notFound = false;
-        $this->input    = ''; // Reset input
-
-        // Force re-render component
-        $this->render();
-
-        // Dispatch event untuk focus
+        $this->data            = null;
+        $this->notFound        = false;
+        $this->alreadyPaid     = false;
+        $this->paymentSuccess  = false;
+        $this->pembayaranTotal = 0;
+        $this->input           = '';
         $this->dispatch('focus-search-input');
-
-        Log::info('Modal ditutup, input direset ke: "' . $this->input . '"');
     }
 
     public function render()

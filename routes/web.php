@@ -15,8 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/pelanggan/cari', [PelangganController::class, 'cari'])->name('pelanggan.cari');
-
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
     // overview
     Route::get('/', [DashboardController::class, 'index'])->name('index');
@@ -33,6 +31,8 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     // Pembayaran
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran');
 
+
+
     // Tarif Listrik
     Route::get('/tarif', [TarifController::class, 'index'])->name('tarif');
 
@@ -43,7 +43,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

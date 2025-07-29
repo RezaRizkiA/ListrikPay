@@ -12,4 +12,9 @@ class PembayaranController extends Controller
         $pembayarans = Pembayaran::all();
         return view('dashboard.pembayaran', compact('pembayarans'));
     }
+
+    public function pembayaran($pelanggan)
+    {
+        return view('transaction.pembayaran', compact('pelanggan', $pelanggan));
+    }
 }

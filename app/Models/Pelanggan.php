@@ -5,6 +5,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pelanggan extends Model
 {
+    protected $guarded  = 'id';
+    protected $fillable = [
+        'nama_pelanggan',
+        'nomor_kwh',
+        'alamat',
+        'id_user',
+        'id_tarif',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
