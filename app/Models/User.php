@@ -20,7 +20,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'username',
         'email',
         'password',
-        'level_id',
+        'id_level',
+    ];
+
+    protected $attributes = [
+        'id_level' => 3,
     ];
 
     /**

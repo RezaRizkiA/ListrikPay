@@ -11,7 +11,6 @@ Route::get('/', function () {
 
 Route::post('/pelanggan/cari', [PelangganController::class, 'cari'])->name('pelanggan.cari');
 
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

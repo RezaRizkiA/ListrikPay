@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
                 'password'          => Hash::make('password'),
                 'email_verified_at' => now(),
                 'remember_token'    => Str::random(10),
-                'level_id'          => 1, // Super Admin
+                'id_level'          => 1, // Super Admin
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ],
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
                 'password'          => Hash::make('password'),
                 'email_verified_at' => now(),
                 'remember_token'    => Str::random(10),
-                'level_id'          => 2, // Operator
+                'id_level'          => 2, // Operator
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ],
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
                 'password'          => Hash::make('password'),
                 'email_verified_at' => now(),
                 'remember_token'    => Str::random(10),
-                'level_id'          => 3, // Pelanggan
+                'id_level'          => 3, // Pelanggan
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ],
