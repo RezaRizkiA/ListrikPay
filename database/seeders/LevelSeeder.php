@@ -12,9 +12,18 @@ class LevelSeeder extends Seeder
     public function run(): void
     {
         Level::insert([
-            ['nama_level' => 'Super Admin'],
-            ['nama_level' => 'Operator'],
-            ['nama_level' => 'Pelanggan'],
+            ['nama_level' => 'Super Admin',
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+            ['nama_level' => 'Operator',
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+            ['nama_level' => 'Pelanggan',
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
         ]);
     }
 }

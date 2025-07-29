@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tagihans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_penggunaan')->constrained('penggunaans');
             $table->foreignId('id_pelanggan')->constrained('pelanggans');
+            $table->foreignId('id_penggunaan')->constrained('penggunaans');
             $table->string('bulan', 10);
             $table->year('tahun');
             $table->integer('jumlah_meter');

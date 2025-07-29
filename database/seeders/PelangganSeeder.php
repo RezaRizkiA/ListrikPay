@@ -13,13 +13,14 @@ class PelangganSeeder extends Seeder
     {
         Pelanggan::insert([
             [
-                'user_id'        => 3, // pelanggan1
+                'id_user'        => 3, // pelanggan1
                 'nomor_kwh'      => '1234567890',
                 'nama_pelanggan' => 'Budi Santoso',
                 'alamat'         => 'Jl. Merdeka No. 1',
-                'tarif_id'       => 1,
+                'id_tarif'       => 1,
+                'created_at'   => now(),
+                'updated_at'   => now(),
             ],
         ]);
-
     }
 }

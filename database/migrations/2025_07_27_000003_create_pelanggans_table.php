@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('pelanggans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('id_user')->constrained('users');
             $table->string('nomor_kwh', 25);
             $table->string('nama_pelanggan', 100);
             $table->string('alamat');
-            $table->foreignId('tarif_id')->constrained('tarifs');
+            $table->foreignId('id_tarif')->constrained('tarifs');
             $table->timestamps();
         });
     }

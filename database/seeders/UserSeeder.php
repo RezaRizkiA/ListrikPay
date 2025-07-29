@@ -21,6 +21,8 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'remember_token'    => Str::random(10),
                 'level_id'          => 1, // Super Admin
+                'created_at'        => now(),
+                'updated_at'        => now(),
             ],
             [
                 'username'          => 'operator1',
@@ -29,15 +31,20 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'remember_token'    => Str::random(10),
                 'level_id'          => 2, // Operator
+                'created_at'        => now(),
+                'updated_at'        => now(),
             ],
             [
                 'username'          => 'pelanggan1',
                 'email'             => 'pelanggan1@example.com',
                 'password'          => Hash::make('password'),
-                'email_verified_at' => null,
+                'email_verified_at' => now(),
                 'remember_token'    => Str::random(10),
                 'level_id'          => 3, // Pelanggan
+                'created_at'        => now(),
+                'updated_at'        => now(),
             ],
+
         ]);
 
     }
