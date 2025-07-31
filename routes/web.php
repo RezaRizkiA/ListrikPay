@@ -42,6 +42,17 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
 
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+
+    // ======================================================
+    // TAMBAHKAN ROUTE BARU UNTUK PELANGGAN DI SINI
+    // ======================================================
+    Route::get('/tagihan-saya', function () {
+        return view('dashboard.pelanggan.tagihan');
+    })->name('tagihan.saya');
+    Route::get('/riwayat-pembayaran', function () {
+        return view('dashboard.pelanggan.riwayat-pembayaran');
+    })->name('pembayaran.riwayat');
+
 });
 
 Route::middleware('auth', 'verified')->group(function () {

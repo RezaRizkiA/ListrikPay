@@ -57,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function pelanggan()
     {
-        return $this->hasOne(Pelanggan::class);
+        return $this->hasOne(Pelanggan::class, 'id_user');
     }
 
     public function pembayarans()

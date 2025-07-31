@@ -1,24 +1,12 @@
 <x-app-layout>
-    {{-- Container utama Sidebar --}}
-    <aside
-        class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0 bg-slate-900 border-r border-slate-800"
-        aria-label="Sidenav">
-
+    {{-- ====================================================== --}}
+    {{-- SIDEBAR DINAMIS --}}
+    {{-- ====================================================== --}}
+    <aside id="drawer-navigation"
+        class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full md:translate-x-0 bg-slate-900 border-r border-slate-800">
         <div class="flex flex-col h-full overflow-y-auto px-3 py-4 bg-slate-900">
-            {{-- Bagian Logo --}}
-            <div class="flex items-center px-3 mb-6">
-                <a href="{{ route('dashboard.index') }}" class="flex items-center">
-                    {{-- Ganti dengan SVG Logo Anda --}}
-                    <svg class="w-8 h-8 mr-3 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                    </svg>
-                    <span class="self-center text-xl font-bold whitespace-nowrap text-white">KAMINARI</span>
-                </a>
-            </div>
 
-            {{-- Navigasi Utama --}}
+            {{-- Navigasi Sidebar --}}
             <nav class="flex-1">
                 <ul class="space-y-2">
                     {{-- Grup Menu Utama --}}
@@ -27,7 +15,7 @@
                             Utama</span>
                         <ul class="mt-2 space-y-1">
                             <x-sidebar-link href="{{ route('dashboard.index') }}"
-                                :active="request()->routeIs('dashboard.index')">
+                                :active="request()->routeIs('dashboard.index*')">
                                 <x-slot name="icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor">
@@ -37,19 +25,20 @@
                                             d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
                                     </svg>
                                 </x-slot>
-                                Overview
+                                Dashboard
                             </x-sidebar-link>
                         </ul>
                     </li>
 
-                    {{-- Grup Manajemen Operator --}}
-                    @if(auth()->user()->id_level != 3) {{-- Peringatan: Lihat catatan di bawah --}}
+                    {{-- Kondisional Berdasarkan Role --}}
+                    @if(auth()->user()->id_level != 3)
+                    {{-- Menu untuk Admin & Operator --}}
                     <li class="pt-4">
                         <span
                             class="px-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">Manajemen</span>
                         <ul class="mt-2 space-y-1">
                             <x-sidebar-link href="{{ route('dashboard.penggunaan') }}"
-                                :active="request()->routeIs('dashboard.penggunaan')">
+                                :active="request()->routeIs('dashboard.penggunaan*')">
                                 <x-slot name="icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor">
@@ -60,7 +49,7 @@
                                 Penggunaan
                             </x-sidebar-link>
                             <x-sidebar-link href="{{ route('dashboard.tagihan') }}"
-                                :active="request()->routeIs('dashboard.tagihan')">
+                                :active="request()->routeIs('dashboard.tagihan*')">
                                 <x-slot name="icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor">
@@ -71,7 +60,7 @@
                                 Tagihan
                             </x-sidebar-link>
                             <x-sidebar-link href="{{ route('dashboard.pembayaran') }}"
-                                :active="request()->routeIs('dashboard.pembayaran')">
+                                :active="request()->routeIs('dashboard.pembayaran*')">
                                 <x-slot name="icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor">
@@ -82,7 +71,7 @@
                                 Pembayaran
                             </x-sidebar-link>
                             <x-sidebar-link href="{{ route('dashboard.pelanggan') }}"
-                                :active="request()->routeIs('dashboard.pelanggan')">
+                                :active="request()->routeIs('dashboard.pelanggan*')">
                                 <x-slot name="icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor">
@@ -93,7 +82,7 @@
                                 Data Pelanggan
                             </x-sidebar-link>
                             <x-sidebar-link href="{{ route('dashboard.tarif') }}"
-                                :active="request()->routeIs('dashboard.tarif')">
+                                :active="request()->routeIs('dashboard.tarif*')">
                                 <x-slot name="icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor">
@@ -103,19 +92,15 @@
                                 </x-slot>
                                 Tarif Listrik
                             </x-sidebar-link>
-
-                            {{-- User Management dengan AlpineJS --}}
                             <li
                                 x-data="{ open: {{ request()->routeIs('dashboard.user*') || request()->routeIs('dashboard.level*') ? 'true' : 'false' }} }">
                                 <button @click="open = !open"
                                     class="flex items-center w-full px-3 py-2.5 text-sm font-medium text-left text-slate-400 rounded-lg hover:bg-slate-800 hover:text-white transition-colors duration-200">
-                                    <span class="w-6 h-6">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor">
+                                    <span class="w-6 h-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </span>
+                                        </svg></span>
                                     <span class="ml-3 flex-1">User Management</span>
                                     <svg :class="{ 'rotate-90': open }" class="w-4 h-4 ml-2 transition-transform"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,15 +110,15 @@
                                 </button>
                                 <ul x-show="open" x-collapse class="mt-1 space-y-1 pl-9">
                                     <li><a href="{{ route('dashboard.level') }}"
-                                            class="block px-3 py-2 text-sm rounded-lg {{ request()->routeIs('dashboard.level') ? 'text-white' : 'text-slate-400' }} hover:bg-slate-800 hover:text-white">Levels</a>
+                                            class="block px-3 py-2 text-sm rounded-lg {{ request()->routeIs('dashboard.level*') ? 'text-white' : 'text-slate-400' }} hover:bg-slate-800 hover:text-white">Levels</a>
                                     </li>
                                     <li><a href="{{ route('dashboard.user') }}"
-                                            class="block px-3 py-2 text-sm rounded-lg {{ request()->routeIs('dashboard.user') ? 'text-white' : 'text-slate-400' }} hover:bg-slate-800 hover:text-white">Users</a>
+                                            class="block px-3 py-2 text-sm rounded-lg {{ request()->routeIs('dashboard.user*') ? 'text-white' : 'text-slate-400' }} hover:bg-slate-800 hover:text-white">Users</a>
                                     </li>
                                 </ul>
                             </li>
                             <x-sidebar-link href="{{ route('dashboard.laporan') }}"
-                                :active="request()->routeIs('dashboard.laporan')">
+                                :active="request()->routeIs('dashboard.laporan*')">
                                 <x-slot name="icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor">
@@ -145,6 +130,36 @@
                             </x-sidebar-link>
                         </ul>
                     </li>
+                    @else
+                    {{-- Menu untuk Pelanggan --}}
+                    <li class="pt-4">
+                        <span class="px-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">Akun
+                            Saya</span>
+                        <ul class="mt-2 space-y-1">
+                            <x-sidebar-link href="{{ route('dashboard.tagihan.saya') }}"
+                                :active="request()->routeIs('dashboard.tagihan.saya*')">
+                                <x-slot name="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
+                                    </svg>
+                                </x-slot>
+                                Tagihan Saya
+                            </x-sidebar-link>
+                            <x-sidebar-link href="{{ route('dashboard.pembayaran.riwayat') }}"
+                                :active="request()->routeIs('dashboard.pembayaran.riwayat*')">
+                                <x-slot name="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                                    </svg>
+                                </x-slot>
+                                Riwayat Pembayaran
+                            </x-sidebar-link>
+                        </ul>
+                    </li>
                     @endif
                 </ul>
             </nav>
@@ -153,14 +168,15 @@
             <div class="mt-auto">
                 <div class="p-3 bg-slate-800/50 rounded-lg">
                     <div class="flex items-center">
-                        <img class="h-10 w-10 rounded-full object-cover" src="{{ auth()->user()->profile_photo_url }}"
-                            alt="{{ auth()->user()->name }}">
+                        <div
+                            class="flex items-center justify-center h-10 w-10 rounded-full bg-slate-700 text-slate-300 font-bold text-sm">
+                            <span>{{ auth()->user()->initials }}</span>
+                        </div>
                         <div class="ml-3">
                             <p class="text-sm font-semibold text-white">{{ auth()->user()->name }}</p>
                             <p class="text-xs text-slate-400">{{ auth()->user()->email }}</p>
                         </div>
                     </div>
-                    {{-- Tombol Logout --}}
                     <form method="POST" action="{{ route('logout') }}" class="mt-3">
                         @csrf
                         <button type="submit"
@@ -179,10 +195,13 @@
         </div>
     </aside>
 
-    {{-- Konten Utama --}}
+    {{-- ====================================================== --}}
+    {{-- KONTEN UTAMA HALAMAN --}}
+    {{-- ====================================================== --}}
     <main class="md:ml-64 pt-16 h-screen">
-        <div class="px-4 md:px-6 py-6 bg-slate-950 h-full">
+        <div class="px-4 md:px-6 py-6 bg-slate-950 h-full overflow-y-auto">
             @yield('dashboard-content')
         </div>
     </main>
+
 </x-app-layout>
