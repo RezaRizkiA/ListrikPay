@@ -3,7 +3,6 @@ namespace App\Livewire;
 
 use App\Models\Pelanggan;
 use App\Models\Penggunaan;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -57,10 +56,32 @@ class PenggunaanLivewire extends Component
         } else {
             $this->new_meterAwal = 0;
         }
-        Log::info('info meter awal ' . $this->new_meterAwal);
 
         // Reset meter akhir agar user mengisi ulang
         $this->new_meterAkhir = null;
+    }
+
+    public function getDaftarBulanProperty()
+    {
+        $bulan = [];
+        for ($i = 1; $i <= 12; $i++) {
+            // 'F' akan memberikan nama bulan lengkap (e.g., "Januari")
+            $bulan[] = \Carbon\Carbon::create()->month($i)->translatedFormat('F');
+        }
+        return $bulan;
+    }
+
+    public function getDaftarTahunProperty()
+    {
+        $tahunSekarang = now()->year;
+        $daftarTahun   = [];
+
+        // Membuat daftar tahun dari (tahun sekarang + 1) hingga (tahun sekarang - 2)
+        for ($i = $tahunSekarang + 1; $i >= $tahunSekarang - 2; $i--) {
+            $daftarTahun[] = $i;
+        }
+
+        return $daftarTahun;
     }
 
     public function saveCreate()

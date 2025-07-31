@@ -39,11 +39,16 @@
 
                     {{-- Bulan --}}
                     <div class="relative">
-                        <input type="text" wire:model.live="new_bulan" id="bulan"
-                            class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none"
-                            placeholder=" " />
+                        <select wire:model.live="new_bulan" id="bulan"
+                            class="peer block w-full px-3 pt-4 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none appearance-none">
+                            <option value="">Pilih Bulan</option>
+                            {{-- Loop untuk setiap bulan dari Januari sampai Desember --}}
+                            @foreach($this->daftarBulan as $bulan)
+                            <option value="{{ $bulan }}">{{ $bulan }}</option>
+                            @endforeach
+                        </select>
                         <label for="bulan"
-                            class="absolute left-3 top-2 text-xs text-gray-400 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 transition-all">
+                            class="absolute left-3 top-2 text-xs text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 transition-all">
                             Bulan
                         </label>
                         @error('new_bulan')
@@ -53,11 +58,16 @@
 
                     {{-- Tahun --}}
                     <div class="relative">
-                        <input type="text" wire:model.live="new_tahun" id="tahun"
-                            class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none"
-                            placeholder=" " />
+                        <select wire:model.live="new_tahun" id="tahun"
+                            class="peer block w-full px-3 pt-4 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none appearance-none">
+                            <option value="">Pilih Tahun</option>
+                            {{-- Loop untuk setiap tahun yang kita buat di komponen --}}
+                            @foreach($this->daftarTahun as $tahun)
+                            <option value="{{ $tahun }}">{{ $tahun }}</option>
+                            @endforeach
+                        </select>
                         <label for="tahun"
-                            class="absolute left-3 top-2 text-xs text-gray-400 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 transition-all">
+                            class="absolute left-3 top-2 text-xs text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 transition-all">
                             Tahun
                         </label>
                         @error('new_tahun')
@@ -66,7 +76,6 @@
                     </div>
 
                     {{-- Meter Awal --}}
-                    @if($new_meterAwal)
                     <div class="relative">
                         <input type="number" wire:model.live="new_meterAwal" id="meter_awal" readonly
                             class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none cursor-not-allowed"
@@ -79,7 +88,6 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-                    @endif
 
                     {{-- Meter Akhir --}}
                     <div class="relative">

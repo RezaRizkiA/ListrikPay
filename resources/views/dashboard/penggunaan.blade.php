@@ -21,7 +21,6 @@
                     <th class="sticky top-0 px-6 py-3 uppercase font-semibold text-gray-400">Meter Awal</th>
                     <th class="sticky top-0 px-6 py-3 uppercase font-semibold text-gray-400">Meter Akhir</th>
                     <th class="sticky top-0 px-6 py-3 uppercase font-semibold text-gray-400">Konsumsi (kWh)</th>
-                    <th class="sticky top-0 px-6 py-3 uppercase font-semibold text-gray-400">Dibuat</th>
                     <th class="sticky top-0 px-6 py-3 text-center uppercase font-semibold text-gray-400">Aksi</th>
                 </tr>
             </thead>
@@ -43,9 +42,6 @@
                     <td class="px-6 py-4">{{ number_format($usage->meter_akhir) }}</td>
                     <td class="px-6 py-4 font-semibold">
                         {{ number_format($consumption) }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $usage->created_at->translatedFormat('d F Y, H:i') }}
                     </td>
                     <td class="px-6 py-4 text-center">
                         <button x-data @click="$dispatch('showEditPenggunaan',{id:{{ $usage->id }}})"
