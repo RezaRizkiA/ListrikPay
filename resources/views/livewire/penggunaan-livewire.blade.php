@@ -19,11 +19,13 @@
                 <div class="grid grid-cols-1 gap-4">
                     {{-- ID Pelanggan --}}
                     <div class="relative">
-                        <select wire:model.defer="new_id_pelanggan" id="pelanggan"
+                        <select wire:model.live="new_id_pelanggan" id="pelanggan"
                             class="peer block w-full px-3 pt-4 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none appearance-none">
-                            <option value="" disabled selected hidden>Pilih Pelanggan</option>
+                            <option value="">Pilih Pelanggan</option>
                             @foreach ($pelanggans as $pelanggan)
-                            <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama_pelanggan }}</option>
+                            <option value="{{ $pelanggan->id }}" wire:key="pelanggan-{{ $pelanggan->id }}">
+                                {{ $pelanggan->nama_pelanggan }}
+                            </option>
                             @endforeach
                         </select>
                         <label for="pelanggan"
@@ -37,7 +39,7 @@
 
                     {{-- Bulan --}}
                     <div class="relative">
-                        <input type="text" wire:model.defer="new_bulan" id="bulan"
+                        <input type="text" wire:model.live="new_bulan" id="bulan"
                             class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none"
                             placeholder=" " />
                         <label for="bulan"
@@ -51,7 +53,7 @@
 
                     {{-- Tahun --}}
                     <div class="relative">
-                        <input type="text" wire:model.defer="new_tahun" id="tahun"
+                        <input type="text" wire:model.live="new_tahun" id="tahun"
                             class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none"
                             placeholder=" " />
                         <label for="tahun"
@@ -64,9 +66,10 @@
                     </div>
 
                     {{-- Meter Awal --}}
+                    @if($new_meterAwal)
                     <div class="relative">
-                        <input type="number" wire:model.defer="new_meterAwal" id="meter_awal"
-                            class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none"
+                        <input type="number" wire:model.live="new_meterAwal" id="meter_awal" readonly
+                            class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none cursor-not-allowed"
                             placeholder=" " />
                         <label for="meter_awal"
                             class="absolute left-3 top-2 text-xs text-gray-400 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 transition-all">
@@ -76,10 +79,11 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
+                    @endif
 
                     {{-- Meter Akhir --}}
                     <div class="relative">
-                        <input type="number" wire:model.defer="new_meterAkhir" id="meter_akhir"
+                        <input type="number" wire:model.live="new_meterAkhir" id="meter_akhir"
                             class="peer block w-full px-3 pt-5 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none"
                             placeholder=" " />
                         <label for="meter_akhir"
