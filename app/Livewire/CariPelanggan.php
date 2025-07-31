@@ -20,60 +20,54 @@ class CariPelanggan extends Component
     public function cari()
     {
         // Reset state sebelum pencarian baru
-        $this->notFound        = false;
-        $this->data            = null;
-        $this->alreadyPaid     = false;
-        $this->paymentSuccess  = false;
-        $this->pembayaranTotal = 0;
+        $this->reset(['data', 'notFound', 'alreadyPaid', 'paymentSuccess', 'pembayaranTotal']);
 
         if (trim($this->input) == '') {
             return;
         }
 
         try {
-            $pelanggan = Pelanggan::with([
-                'tagihans' => fn($q) => $q->latest('tahun')->latest('bulan'),
-                'penggunaan',
-            ])
+            // 1. Cari data pelanggan terlebih dahulu
+            $pelanggan = Pelanggan::with('tarif')
                 ->where('id', $this->input)
                 ->orWhere('nomor_kwh', $this->input)
                 ->first();
 
-            if ($pelanggan && $pelanggan->tagihans->count()) {
-                $tagihan   = $pelanggan->tagihans->first();
-                $tagihanId = $tagihan->id;
+            // Jika pelanggan tidak ditemukan sama sekali
+            if (! $pelanggan) {
+                $this->notFound = true;
+                return;
+            }
 
-                // Jika Sudah Lunas
-                if ($tagihan->status === 'Lunas') {
-                    $this->alreadyPaid = true;
-                    // Cukup data minimal untuk modal lunas
-                    $this->data = [
-                        'id'    => $pelanggan->nomor_kwh,
-                        'bulan' => $tagihan->bulan,
-                        'tahun' => $tagihan->tahun,
-                    ];
-                    // langsung tampilkan modal
-                    return;
-                }
+            // 2. Prioritaskan mencari tagihan PALING LAMA yang BELUM LUNAS
+            $tagihanUntukDibayar = Tagihan::where('id_pelanggan', $pelanggan->id)
+                ->where('status', 'Belum Lunas')
+                ->orderBy('tahun', 'asc')
+                ->orderBy('bulan', 'asc')
+                ->first();
 
-                // Kalau belum lunas, hitung normal
-                $pemakaian      = $tagihan->jumlah_meter;
+            // 3. JIKA DITEMUKAN tagihan yang belum lunas
+            if ($tagihanUntukDibayar) {
+                $this->alreadyPaid = false; // Pastikan status lunas di-reset
+
+                // Hitung detail tagihan yang belum lunas
+                $pemakaian      = $tagihanUntukDibayar->jumlah_meter;
                 $tarifPerKwh    = $pelanggan->tarif->tarifperkwh;
                 $tagihanListrik = $pemakaian * $tarifPerKwh;
                 $biayaAdmin     = 2500;
                 $ppn            = $tagihanListrik * 0.1;
                 $totalTagihan   = $tagihanListrik + $biayaAdmin + $ppn;
 
-                // Siapkan data untuk modal detail
+                // Siapkan data untuk modal detail pembayaran
                 $this->data = [
                     'id'              => $pelanggan->id,
                     'nomor_kwh'       => $pelanggan->nomor_kwh,
-                    'tagihan_id'      => $tagihanId,
+                    'tagihan_id'      => $tagihanUntukDibayar->id,
                     'nama'            => $pelanggan->nama_pelanggan,
                     'alamat'          => $pelanggan->alamat,
                     'tarif_daya'      => $pelanggan->tarif->daya . ' VA',
-                    'bulan'           => $tagihan->bulan,
-                    'tahun'           => $tagihan->tahun,
+                    'bulan'           => $tagihanUntukDibayar->bulan,
+                    'tahun'           => $tagihanUntukDibayar->tahun,
                     'jumlah_meter'    => $pemakaian,
                     'tagihan_listrik' => $tagihanListrik,
                     'biaya_admin'     => $biayaAdmin,
@@ -81,7 +75,23 @@ class CariPelanggan extends Component
                     'total_tagihan'   => $totalTagihan,
                 ];
             } else {
-                $this->notFound = true;
+                // 4. JIKA TIDAK DITEMUKAN tagihan belum lunas, berarti semua sudah lunas atau belum ada tagihan sama sekali
+                $tagihanTerakhir = Tagihan::where('id_pelanggan', $pelanggan->id)
+                    ->latest('created_at')
+                    ->first();
+
+                if ($tagihanTerakhir) {
+                    // Jika ada riwayat tagihan, tampilkan pesan lunas untuk tagihan terakhir
+                    $this->alreadyPaid = true;
+                    $this->data        = [
+                        'id'    => $pelanggan->nomor_kwh,
+                        'bulan' => $tagihanTerakhir->bulan,
+                        'tahun' => $tagihanTerakhir->tahun,
+                    ];
+                } else {
+                                            // Jika pelanggan ada tapi sama sekali belum punya tagihan
+                    $this->notFound = true; // Tampilkan pesan 'tidak ditemukan'
+                }
             }
         } catch (\Exception $e) {
             Log::error('Gagal mencari pelanggan: ' . $e->getMessage());

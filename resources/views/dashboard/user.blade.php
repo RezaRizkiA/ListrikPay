@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
-                @forelse($users as $i => $user)
+                @forelse($allUsers as $i => $user)
                 <tr class="bg-gray-900 hover:bg-gray-800 transition-colors">
                     <td class="px-6 py-4">{{ $i + 1 }}</td>
                     <td class="px-6 py-4 font-medium text-white">{{ $user->username }}</td>

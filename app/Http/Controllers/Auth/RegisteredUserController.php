@@ -44,6 +44,9 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+        if ($user->id_level == 3) {
+            return redirect('/');
+        }
 
         return redirect(route('dashboard.index', absolute: false));
     }

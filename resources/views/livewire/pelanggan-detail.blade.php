@@ -15,7 +15,6 @@
                     </svg>
                 </button>
             </div>
-
             {{-- Body --}}
             <div class="px-6 py-6 space-y-4">
                 <div class="grid grid-cols-1 gap-4">

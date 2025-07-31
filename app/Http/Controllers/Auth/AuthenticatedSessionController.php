@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -27,6 +26,14 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        $user = Auth::user();
+
+        if ($user->id_level == 3) {
+            // Jika id_level adalah 3 (pelanggan), arahkan ke welcome view
+            return redirect('/');
+
+        }
 
         return redirect()->intended(route('dashboard.index', absolute: false));
     }

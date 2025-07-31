@@ -5,9 +5,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tagihan extends Model
 {
-    protected $guarded  = 'id';
-    
+    protected $guarded = 'id';
+
     protected $fillable = [
+        'id_pelanggan',
+        'id_penggunaan',
+        'bulan',
+        'tahun',
+        'jumlah_meter',
         'status',
     ];
 

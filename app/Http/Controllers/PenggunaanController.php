@@ -1,15 +1,15 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Penggunaan;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PenggunaanController extends Controller
 {
     public function index()
     {
-        $penggunaans = Penggunaan::all();
-        return view('dashboard.penggunaan', compact('penggunaans'));
+        $users       = Auth::user();
+        $penggunaans = Penggunaan::with(['pelanggan', 'tagihan'])->get();
+        return view('dashboard.penggunaan', compact('penggunaans', 'users'));
     }
 }

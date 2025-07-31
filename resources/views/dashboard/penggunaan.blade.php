@@ -68,8 +68,7 @@
             </tbody>
         </table>
     </div>
-
     {{-- Livewire modals --}}
-    {{-- @livewire('penggunaan-detail') --}}
+    @livewire('penggunaan-livewire')
 </div>
 @endsection
