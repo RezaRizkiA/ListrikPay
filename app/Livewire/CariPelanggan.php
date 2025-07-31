@@ -17,6 +17,36 @@ class CariPelanggan extends Component
     public $paymentSuccess  = false;
     public $pembayaranTotal = 0;
 
+    /**
+     * Method ini berjalan saat komponen pertama kali dimuat.
+     */
+    public function mount()
+    {
+        // Cek jika ada pencarian yang tersimpan di session setelah login
+        if (session()->has('customer_search')) {
+            $this->input = session('customer_search');
+            session()->forget('customer_search'); // Hapus session agar tidak dicari lagi
+            $this->cari();                        // Langsung jalankan pencarian
+        }
+    }
+
+    /**
+     * Method "pintar" yang akan dipanggil oleh tombol.
+     */
+    public function prosesPembayaran()
+    {
+        if (Auth::check()) {
+            // Jika pengguna sudah login, langsung jalankan fungsi pembayaran
+            $this->bayarSekarang();
+        } else {
+            // Jika belum login (guest):
+            // 1. Simpan ID pelanggan yang dicari ke dalam session.
+            session(['customer_search' => $this->input]);
+            // 2. Arahkan pengguna ke halaman login.
+            $this->redirect(route('login'), navigate: true);
+        }
+    }
+
     public function cari()
     {
         // Reset state sebelum pencarian baru

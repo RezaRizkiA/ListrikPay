@@ -14,7 +14,7 @@
             </button>
 
             {{-- Logo di Top Bar --}}
-            <a href="{{ route('dashboard.index') }}" class="flex items-center justify-between mr-4">
+            <a href="{{ route('welcome') }}" class="flex items-center justify-between mr-4">
                 <svg class="w-8 h-8 mr-3 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -24,9 +24,6 @@
             </a>
         </div>
         <div class="flex items-center lg:order-2 space-x-2">
-            {{-- Notifikasi (Placeholder) --}}
-            {{-- ... (kode notifikasi Anda bisa ditaruh di sini) ... --}}
-
             {{-- Dropdown Profil Pengguna dengan AlpineJS --}}
             <div x-data="{ open: false }" class="relative">
                 <button @click="open = !open" type="button"

@@ -157,7 +157,7 @@
                 <!-- Modal footer -->
                 <div class="flex justify-between items-center">
                     <div class="flex items-center space-x-3 sm:space-x-4">
-                        <button wire:click.prevent="bayarSekarang"
+                        <button wire:click.prevent="prosesPembayaran"
                             class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                             <svg aria-hidden="true" class="mr-1 -ml-1 w-5 h-5" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
