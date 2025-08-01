@@ -1,6 +1,43 @@
 <div>
+    <style>
+        .ts-wrapper .ts-control {
+            background-color: #1f2937 !important;
+            /* bg-slate-800 */
+            border-color: #4b5563 !important;
+            /* border-slate-600 */
+            border-radius: 0.5rem;
+            min-height: 42px;
+        }
+
+        .ts-wrapper.focus .ts-control {
+            border-color: #38bdf8 !important;
+            /* border-sky-400 */
+            box-shadow: none;
+        }
+
+        .ts-wrapper .ts-dropdown {
+            background: #374151;
+            /* bg-slate-700 */
+            border-color: #4b5563;
+            /* border-slate-600 */
+        }
+
+        .ts-wrapper .ts-dropdown .ts-option.active {
+            background: #0ea5e9;
+            /* bg-sky-500 */
+        }
+
+        .ts-wrapper .ts-item {
+            background: #38bdf8;
+            /* bg-sky-400 */
+            color: #0c4a6e;
+            /* text-sky-900 */
+            font-weight: 600;
+        }
+    </style>
     {{-- Modal Create --}}
     @if ($showCreateModal)
+    {{-- {{ dd($users) }} --}}
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
         <div class="relative w-full max-w-md bg-gray-800 text-gray-100 rounded-2xl shadow-2xl overflow-hidden">
             {{-- Header --}}
@@ -63,19 +100,22 @@
                     {{-- User & Tarif side by side on larger screens --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {{-- User --}}
+                        {{-- User (dengan multi-select) --}}
                         <div class="relative">
-                            <select wire:model.defer="new_id_user" id="user"
-                                class="peer block w-full px-3 pt-4 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none appearance-none">
-                                <option value="" disabled selected hidden></option>
+                            <label for="user" class="absolute left-3 top-2 text-xs text-gray-400">
+                                Hubungkan ke User (Opsional)
+                            </label>
+                            <select multiple wire:model.defer="new_user_ids" id="user"
+                                class="block w-full px-3 pt-6 pb-2 bg-gray-900 rounded-lg border border-gray-700 focus:border-green-500 focus:outline-none appearance-none">
+                                {{-- Loop untuk setiap user pelanggan --}}
                                 @foreach ($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->username }}</option>
+                                <option value="{{ $user->id }}" wire:key="user-{{ $user->id }}">{{ $user->username }}
+                                </option>
                                 @endforeach
                             </select>
-                            <label for="user"
-                                class="absolute left-3 top-2 text-xs text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 transition-all">
-                                User
-                            </label>
-                            @error('new_id_user')
+                            <small class="text-xs text-gray-500 mt-1">Tahan Ctrl/Cmd untuk memilih lebih dari
+                                satu.</small>
+                            @error('new_user_ids')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -160,9 +200,15 @@
                     <div class="text-gray-700 dark:text-gray-300">{{ $pelanggan->alamat }}</div>
                 </div>
                 <div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">User</div>
-                    <div class="font-semibold text-cyan-600 dark:text-cyan-300">
-                        {{ $pelanggan->user->username ?? '-' }}
+                    <div class="text-xs text-gray-500 dark:text-gray-400">User Terhubung</div>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        @forelse($pelanggan->users as $user)
+                        <span class="px-2 py-1 text-xs font-semibold bg-slate-700 text-slate-300 rounded-full">
+                            {{ $user->username }}
+                        </span>
+                        @empty
+                        <span class="text-xs text-slate-500 italic">Belum terhubung ke User</span>
+                        @endforelse
                     </div>
                 </div>
                 <div class="sm:col-span-2">
@@ -241,6 +287,58 @@
                 @endif
             </div>
 
+            {{-- ============================================= --}}
+            {{-- BAGIAN BARU UNTUK MENGHUBUNGKAN USER --}}
+            {{-- ============================================= --}}
+            <div>
+                <h3 class="flex items-center gap-2 text-lg font-semibold text-slate-200 mb-3">
+                    <svg class="h-5 w-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                    </svg>
+                    Hubungkan ke Akun User
+                </h3>
+
+                {{-- Notifikasi sukses sementara --}}
+                @if (session()->has('detail_success'))
+                <div class="p-3 mb-3 text-sm text-green-300 bg-green-900/50 border border-green-700 rounded-lg">
+                    {{ session('detail_success') }}
+                </div>
+                @endif
+
+                {{-- Daftar Checkbox --}}
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium text-gray-400">Pilih user untuk dihubungkan:</label>
+
+                    <div class="w-full max-h-40 overflow-y-auto p-2 bg-slate-900 border border-slate-700 rounded-lg space-y-2">
+                        @forelse ($users as $user)
+                        <label for="user-{{ $user->id }}"
+                            class="flex items-center w-full p-2 text-sm text-white rounded-md hover:bg-slate-700 transition-colors cursor-pointer">
+                            <input id="user-{{ $user->id }}" type="checkbox" wire:model="link_user_ids" value="{{ $user->id }}"
+                                class="w-4 h-4 text-sky-500 bg-slate-800 border-slate-600 rounded focus:ring-sky-600 focus:ring-2">
+                            <span class="ml-3">{{ $user->username}}</span>
+                        </label>
+                        @empty
+                        <p class="text-sm text-slate-500 text-center p-4">Tidak ada user pelanggan yang tersedia.</p>
+                        @endforelse
+                    </div>
+                    @error('link_user_ids') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Tombol Aksi --}}
+                <div class="flex justify-end mt-4">
+                    <button wire:click="linkUsers" wire:loading.attr="disabled"
+                        class="inline-flex items-center px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                        </svg>
+                        Hubungkan User
+                    </button>
+                </div>
+            </div>
+
             <div class="flex justify-end gap-3 mt-8">
                 <button wire:click="openEditModal"
                     class="inline-flex items-center px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white font-semibold transition">
@@ -259,6 +357,7 @@
                     Hapus
                 </button>
             </div>
+
 
         </div>
     </div>

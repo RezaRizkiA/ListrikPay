@@ -10,19 +10,23 @@ class RiwayatPembayaran extends Component
     use WithPagination;
 
     public function render()
-    {
-        $pelanggan   = auth()->user()->pelanggan;
-        $pembayarans = [];
+{
+    $user = auth()->user();
+    // 1. Dapatkan SEMUA ID pelanggan yang terhubung dengan user ini
+    $pelangganIds = $user->pelanggans()->pluck('pelanggans.id')->toArray();
 
-        if ($pelanggan) {
-            $pembayarans = Pembayaran::where('id_pelanggan', $pelanggan->id)
-                ->with('tagihan')
-                ->latest()
-                ->paginate(10);
-        }
-
-        return view('livewire.pelanggan.riwayat-pembayaran', [
-            'pembayarans' => $pembayarans,
-        ]);
+    if (!empty($pelangganIds)) {
+        // 2. Cari semua pembayaran yang id_pelanggan-nya ada di dalam array $pelangganIds
+        $pembayarans = Pembayaran::whereIn('id_pelanggan', $pelangganIds)
+            ->with('tagihan.pelanggan') // Load juga data pelanggan untuk ditampilkan di tabel
+            ->latest()
+            ->paginate(10);
+    } else {
+        $pembayarans = Pembayaran::where('id', false)->paginate(10);
     }
+
+    return view('livewire.pelanggan.riwayat-pembayaran', [
+        'pembayarans' => $pembayarans,
+    ]);
+}
 }

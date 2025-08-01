@@ -15,9 +15,6 @@ class DatabaseSeeder extends Seeder
             LevelSeeder::class,
             UserSeeder::class,
             TarifSeeder::class,
-            PelangganSeeder::class,
-            PenggunaanSeeder::class,
-            TagihanSeeder::class,
         ]);
     }
 }

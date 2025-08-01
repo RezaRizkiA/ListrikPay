@@ -10,7 +10,7 @@ class PelangganController extends Controller
     public function index()
     {
         $users = Auth::user();
-        $pelanggans = Pelanggan::with(['user', 'tarif', 'tagihans', 'penggunaan'])->get();
+        $pelanggans = Pelanggan::with(['users', 'tarif', 'tagihans', 'penggunaan'])->latest()->paginate(15);
         return view('dashboard.pelanggan', compact('pelanggans', 'users'));
     }
 

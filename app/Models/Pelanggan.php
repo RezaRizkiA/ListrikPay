@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Pelanggan extends Model
@@ -14,9 +15,9 @@ class Pelanggan extends Model
         'id_tarif',
     ];
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsToMany(User::class, 'pelanggan_user');
     }
 
     public function tarif()
@@ -32,5 +33,12 @@ class Pelanggan extends Model
     public function penggunaan()
     {
         return $this->hasMany(Penggunaan::class, 'id_pelanggan');
+    }
+
+    public function tagihanTerakhir(): Attribute
+    {
+        return Attribute::get(
+            fn() => $this->tagihans()->latest('created_at')->first()
+        );
     }
 }

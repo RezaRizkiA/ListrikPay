@@ -34,17 +34,6 @@ class UserSeeder extends Seeder
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ],
-            [
-                'username'          => 'pelanggan1',
-                'email'             => 'pelanggan1@example.com',
-                'password'          => Hash::make('password'),
-                'email_verified_at' => now(),
-                'remember_token'    => Str::random(10),
-                'id_level'          => 3, // Pelanggan
-                'created_at'        => now(),
-                'updated_at'        => now(),
-            ],
-
         ]);
 
     }
