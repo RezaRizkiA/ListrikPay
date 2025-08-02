@@ -94,10 +94,10 @@
                         <span class="font-semibold">{{ $data['bulan'] . ' ' . $data['tahun'] }}</span>
                         sudah <span class="font-semibold text-green-600">lunas</span>.
                     </p>
-                    {{-- <a href="{{ route('riwayat-tagihan', ['pelanggan' => $data['id']]) }}"
+                    <a href="{{ route('dashboard.pembayaran.riwayat') }}"
                         class="inline-block px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg transition">
                         Lihat Riwayat Pembayaran
-                    </a> --}}
+                    </a>
                 </div>
                 @else
                 <!-- Modal body -->

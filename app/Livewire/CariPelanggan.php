@@ -23,10 +23,12 @@ class CariPelanggan extends Component
     public function mount()
     {
         // Cek jika ada pencarian yang tersimpan di session setelah login
+        // Hapus session agar tidak dicari lagi
+        // Langsung jalankan pencarian
         if (session()->has('customer_search')) {
             $this->input = session('customer_search');
-            session()->forget('customer_search'); // Hapus session agar tidak dicari lagi
-            $this->cari();                        // Langsung jalankan pencarian
+            session()->forget('customer_search');
+            $this->cari();
         }
     }
 
