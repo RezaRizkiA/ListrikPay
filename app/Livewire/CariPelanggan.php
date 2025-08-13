@@ -166,8 +166,6 @@ class CariPelanggan extends Component
 
     public function closeModal()
     {
-        Log::info('Method closeModal() dipanggil');
-
         $this->data            = null;
         $this->notFound        = false;
         $this->alreadyPaid     = false;

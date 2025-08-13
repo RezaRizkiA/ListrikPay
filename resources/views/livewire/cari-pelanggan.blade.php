@@ -25,7 +25,9 @@
 
     {{-- Pesan jika tidak ditemukan --}}
     @if ($notFound)
-    <div class="mb-4 text-red-600 text-center font-semibold">ID Pelanggan atau Nomor kWh tidak ditemukan!</div>
+    <div >
+        <div class="mb-4 text-red-600 text-center font-semibold">ID Pelanggan atau Nomor kWh tidak ditemukan!</div>
+    </div>
     @endif
 
     {{-- Modal: Pembayaran Berhasil --}}
