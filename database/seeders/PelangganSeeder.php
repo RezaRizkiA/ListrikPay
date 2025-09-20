@@ -1,8 +1,10 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Pelanggan;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class PelangganSeeder extends Seeder
 {
@@ -11,16 +13,19 @@ class PelangganSeeder extends Seeder
      */
     public function run(): void
     {
-        Pelanggan::insert([
-            [
-                'id_user'        => 3, // pelanggan1
-                'nomor_kwh'      => '1234567890',
-                'nama_pelanggan' => 'Budi Santoso',
-                'alamat'         => 'Jl. Merdeka No. 1',
-                'id_tarif'       => 1,
+        $faker = Faker::create('id_ID');
+        $data = [];
+
+        for ($i = 1; $i <= 200; $i++) {
+            $data[] = [
+                'nomor_kwh'      => $faker->unique()->numerify('##########'),
+                'nama_pelanggan' => $faker->name(),
+                'alamat'         => $faker->address(),
+                'id_tarif'       => $faker->numberBetween(1, 3), // Assuming there are 3 tariff plans
                 'created_at'   => now(),
                 'updated_at'   => now(),
-            ],
-        ]);
+            ];
+        }
+        Pelanggan::insert($data);
     }
 }
