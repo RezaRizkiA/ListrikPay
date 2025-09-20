@@ -24,9 +24,35 @@
     </form>
 
     {{-- Pesan jika tidak ditemukan --}}
-    @if ($notFound)
-    <div >
-        <div class="mb-4 text-red-600 text-center font-semibold">ID Pelanggan atau Nomor kWh tidak ditemukan!</div>
+    {{-- @if ($notFound)
+    <div>
+        <div class="mb-4 text-red-600 text-center font-semibold">
+            {{ $notFoundMessage }}
+        </div>
+    </div>
+    @endif --}}
+    @if($notFound)
+    <div id="notFoundModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Data Tidak Ditemukan</h3>
+                <button wire:click="closeModal" class="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+    
+            <div class="text-center space-y-4">
+                <svg class="w-16 h-16 mx-auto text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v3m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                </svg>
+                <p class="text-gray-700 dark:text-gray-300">
+                    {{ $notFoundMessage ?: 'ID Pelanggan atau Nomor kWh tidak ditemukan!' }}
+                </p>
+                <button wire:click="closeModal"
+                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
     </div>
     @endif
 

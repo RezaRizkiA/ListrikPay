@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire;
 
 use App\Models\Pelanggan;
@@ -13,6 +14,7 @@ class CariPelanggan extends Component
     public $input           = '';
     public $data            = null;
     public $notFound        = false;
+    public $notFoundMessage = '';
     public $alreadyPaid     = false;
     public $paymentSuccess  = false;
     public $pembayaranTotal = 0;
@@ -52,7 +54,7 @@ class CariPelanggan extends Component
     public function cari()
     {
         // Reset state sebelum pencarian baru
-        $this->reset(['data', 'notFound', 'alreadyPaid', 'paymentSuccess', 'pembayaranTotal']);
+        $this->reset(['data', 'notFound', 'notFoundMessage', 'alreadyPaid', 'paymentSuccess', 'pembayaranTotal']);
 
         if (trim($this->input) == '') {
             return;
@@ -60,14 +62,17 @@ class CariPelanggan extends Component
 
         try {
             // 1. Cari data pelanggan terlebih dahulu
-            $pelanggan = Pelanggan::with('tarif')
-                ->where('id', $this->input)
-                ->orWhere('nomor_kwh', $this->input)
-                ->first();
-
+            // $pelanggan = Pelanggan::with('tarif')
+            //     ->where('id', $this->input)
+            //     ->orWhere('nomor_kwh', $this->input)
+            //     ->first();
+            $pelanggan = Pelanggan::with('tarif')->where(function ($q) {
+                $q->where('id', $this->input)->orWhere('nomor_kwh', $this->input);
+            })->first();
             // Jika pelanggan tidak ditemukan sama sekali
-            if (! $pelanggan) {
+            if (!$pelanggan) {
                 $this->notFound = true;
+                $this->notFoundMessage = 'ID Pelanggan atau Nomor KWH tidak ditemukan!';
                 return;
             }
 
@@ -121,13 +126,15 @@ class CariPelanggan extends Component
                         'tahun' => $tagihanTerakhir->tahun,
                     ];
                 } else {
-                                            // Jika pelanggan ada tapi sama sekali belum punya tagihan
+                    // Jika pelanggan ada tapi sama sekali belum punya tagihan
                     $this->notFound = true; // Tampilkan pesan 'tidak ditemukan'
+                    $this->notFoundMessage = 'Pelanggan ditemukan, tapi belum ada tagihan';
                 }
             }
         } catch (\Exception $e) {
             Log::error('Gagal mencari pelanggan: ' . $e->getMessage());
             $this->notFound = true;
+            $this->notFoundMessage = 'Terjadi kesalahan saat mencari. Coba lagi nanti.';
         }
     }
 
@@ -158,7 +165,6 @@ class CariPelanggan extends Component
             $this->pembayaranTotal = $pembayaran->total_bayar;
             // hilangkan data biar detail modal tidak muncul
             $this->data = null;
-
         } catch (\Exception $e) {
             Log::error('Gagal simpan pembayaran: ' . $e->getMessage());
         }
@@ -168,6 +174,7 @@ class CariPelanggan extends Component
     {
         $this->data            = null;
         $this->notFound        = false;
+        $this->notFoundMessage = '';
         $this->alreadyPaid     = false;
         $this->paymentSuccess  = false;
         $this->pembayaranTotal = 0;
