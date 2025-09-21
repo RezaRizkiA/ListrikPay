@@ -6,6 +6,7 @@ use App\Models\Pelanggan;
 use App\Models\Pembayaran;
 use App\Models\Tagihan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
@@ -62,12 +63,8 @@ class CariPelanggan extends Component
 
         try {
             // 1. Cari data pelanggan terlebih dahulu
-            // $pelanggan = Pelanggan::with('tarif')
-            //     ->where('id', $this->input)
-            //     ->orWhere('nomor_kwh', $this->input)
-            //     ->first();
             $pelanggan = Pelanggan::with('tarif')->where(function ($q) {
-                $q->where('id', $this->input)->orWhere('nomor_kwh', $this->input);
+                $q->where('nomor_kwh', $this->input);
             })->first();
             // Jika pelanggan tidak ditemukan sama sekali
             if (!$pelanggan) {
@@ -140,11 +137,9 @@ class CariPelanggan extends Component
 
     public function bayarSekarang()
     {
-        if (! $this->data || ! isset($this->data['tagihan_id'])) {
-            return;
-        }
+        if (! $this->data || ! isset($this->data['tagihan_id'])) return;
 
-        try {
+        DB::transaction(function () {
             // simpan pembayaran
             $pembayaran = Pembayaran::create([
                 'id_tagihan'         => $this->data['tagihan_id'],
@@ -160,14 +155,15 @@ class CariPelanggan extends Component
             Tagihan::find($this->data['tagihan_id'])
                 ->update(['status' => 'Lunas']);
 
+            $pelanggan = Pelanggan::findOrFail($this->data['id']);
+            $pelanggan->users()->syncWithoutDetaching([Auth::id() => ['created_at' => now(), 'updated_at' => now()]]);
+
             // set modal sukses
             $this->paymentSuccess  = true;
             $this->pembayaranTotal = $pembayaran->total_bayar;
             // hilangkan data biar detail modal tidak muncul
             $this->data = null;
-        } catch (\Exception $e) {
-            Log::error('Gagal simpan pembayaran: ' . $e->getMessage());
-        }
+        });
     }
 
     public function closeModal()

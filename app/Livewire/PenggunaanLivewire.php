@@ -3,6 +3,7 @@ namespace App\Livewire;
 
 use App\Models\Pelanggan;
 use App\Models\Penggunaan;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -66,7 +67,7 @@ class PenggunaanLivewire extends Component
         $bulan = [];
         for ($i = 1; $i <= 12; $i++) {
             // 'F' akan memberikan nama bulan lengkap (e.g., "Januari")
-            $bulan[] = \Carbon\Carbon::create()->month($i)->translatedFormat('F');
+            $bulan[] = Carbon::create()->locale('id')->month($i)->translatedFormat('F');
         }
         return $bulan;
     }
@@ -77,7 +78,7 @@ class PenggunaanLivewire extends Component
         $daftarTahun   = [];
 
         // Membuat daftar tahun dari (tahun sekarang + 1) hingga (tahun sekarang - 2)
-        for ($i = $tahunSekarang + 1; $i >= $tahunSekarang - 2; $i--) {
+        for ($i = $tahunSekarang + 1; $i >= $tahunSekarang - 1; $i--) {
             $daftarTahun[] = $i;
         }
 

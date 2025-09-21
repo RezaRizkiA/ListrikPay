@@ -6,15 +6,19 @@
         <table class="min-w-full text-sm text-left text-gray-300">
             <thead class="bg-gray-800">
                 <tr>
+                    <th class="px-6 py-3 uppercase font-semibold">No</th>
+                    <th class="px-6 py-3 uppercase font-semibold">Pelanggan</th>
                     <th class="px-6 py-3 uppercase font-semibold">Bulan / Tahun</th>
                     <th class="px-6 py-3 uppercase font-semibold">Total Penggunaan</th>
                     <th class="px-6 py-3 uppercase font-semibold">Status</th>
-                    <th class="px-6 py-3 text-center uppercase font-semibold">Aksi</th>
+                    {{-- <th class="px-6 py-3 text-center uppercase font-semibold">Aksi</th> --}}
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
                 @forelse($tagihans as $tagihan)
                 <tr class="bg-gray-900 hover:bg-gray-800">
+                    <td class="px-6 py-4">{{ $tagihan->id }}</td>
+                    <td class="px-6 py-4">{{ $tagihan->pelanggan->nama_pelanggan }}</td>
                     <td class="px-6 py-4 font-semibold">{{ $tagihan->bulan }} {{ $tagihan->tahun }}</td>
                     <td class="px-6 py-4">{{ number_format($tagihan->jumlah_meter) }} kWh</td>
                     <td class="px-6 py-4">
@@ -26,7 +30,7 @@
                             Lunas</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-center">
+                    {{-- <td class="px-6 py-4 text-center">
                         @if($tagihan->status != 'Lunas')
                         <button
                             class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg">Bayar</button>
@@ -35,7 +39,7 @@
                             class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg">Lihat
                             Detail</button>
                         @endif
-                    </td>
+                    </td> --}}
                 </tr>
                 @empty
                 <tr>

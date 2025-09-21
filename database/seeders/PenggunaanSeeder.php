@@ -13,7 +13,7 @@ class PenggunaanSeeder extends Seeder
         for ($i = 1; $i <= 200; $i++){
             $data[] = [
                 'id_pelanggan' => $i, // id di tabel pelanggans
-                'bulan'        => 'January',
+                'bulan'        => 'Januari',
                 'tahun'        => 2025,
                 'meter_awal'   => 0,
                 'meter_akhir'  => 300,

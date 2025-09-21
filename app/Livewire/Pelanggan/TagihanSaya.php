@@ -13,11 +13,11 @@ class TagihanSaya extends Component
 
     public function render()
     {
-        $pelanggan = auth()->user()->pelanggan;
+        $pelanggan = auth()->user()->pelanggans->pluck('id', 'nama_pelanggan');
 
         if ($pelanggan) {
-            $tagihans = Tagihan::where('id_pelanggan', $pelanggan->id)
-                ->with('penggunaan')
+            $tagihans = Tagihan::whereIn('id_pelanggan', $pelanggan)
+                ->with('penggunaan')->with('pelanggan')
                 ->latest('tahun')->latest('bulan')
                 ->paginate(10);
         } else {
