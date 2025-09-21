@@ -3,6 +3,7 @@ namespace Database\Seeders;
 
 use App\Models\Tagihan;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 
 class TagihanSeeder extends Seeder
 {
@@ -12,7 +13,7 @@ class TagihanSeeder extends Seeder
             Tagihan::create([
                 'id_pelanggan'  => $i,
                 'id_penggunaan' => $i, // id di tabel penggunaans
-                'bulan'         => 'January',
+                'bulan'         => Arr::random(['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']),
                 'tahun'         => 2025,
                 'jumlah_meter'  => 300, // meter_akhir - meter_awal
                 'status'        => 'Belum Lunas',
