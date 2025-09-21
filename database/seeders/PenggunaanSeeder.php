@@ -14,37 +14,32 @@ class PenggunaanSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
-            $pelangganIds = Pelanggan::orderBy('id')->pluck('id')->values()->all();
-
-            for ($m = 1; $m <= 12; $m++) {
-                $namaBulan = fn($m) => \Carbon\Carbon::create(null, $m, 1)->locale('id')->translatedFormat('F');
-                Penggunaan::create([
-                    'bulan' => $namaBulan($m),
-                ]);
-                Tagihan::create([
-                    'bulan' => $namaBulan($m),
-                ]);
-            };
-
+            $pelangganIds = Pelanggan::pluck('id');
+            
             foreach ($pelangganIds as $pid) {
-                $penggunaan = Penggunaan::create([
-                    'id_pelanggan' => $pid,
-                    'tahun' => 2025,
-                    'meter_awal' => 0,
-                    'meter_akhir' => 300,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                for ($m = 1; $m <= 12; $m++) {
+                    $namaBulan = fn($m) => \Carbon\Carbon::create(null, $m, 1)->locale('id')->translatedFormat('F');
+                    $penggunaan = Penggunaan::create([
+                        'id_pelanggan' => $pid,
+                        'bulan' => $namaBulan($m),
+                        'tahun' => 2025,
+                        'meter_awal' => 0,
+                        'meter_akhir' => 300,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
 
-                Tagihan::create([
-                    'id_pelanggan'  => $pid,
-                    'id_penggunaan' => $penggunaan->id,
-                    'tahun'         => 2025,
-                    'jumlah_meter'  => 300, // meter_akhir - meter_awal
-                    'status'        => 'Belum Lunas',
-                    'created_at'    => now(),
-                    'updated_at'    => now(),
-                ]);
+                    Tagihan::create([
+                        'id_pelanggan'  => $pid,
+                        'id_penggunaan' => $penggunaan->id, // id di tabel penggunaans
+                        'bulan'         => $namaBulan($m),
+                        'tahun'         => 2025,
+                        'jumlah_meter'  => 300, // meter_akhir - meter_awal
+                        'status'        => 'Belum Lunas',
+                        'created_at'    => now(),
+                        'updated_at'    => now(),
+                    ]);
+                }
             }
         });
     }
